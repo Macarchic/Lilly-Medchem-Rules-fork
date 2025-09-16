@@ -22,6 +22,7 @@ def usage (rc)
   $stderr << " -smarts <s>      optional smarts to reject\n" if $expert
   $stderr << " -rej <q>         optional query file to reject\n" if $expert
   $stderr << " -relaxed         relaxed rules: 7-50 heavy atoms, 160 demerit cutoff\n"
+  $stderr << " -nolimit         demerit limit is up to 100000\n"
   $stderr << " -nodemerit       hard rejections only, do not apply any demerits\n" if $expert
   $stderr << " -S <fname>       write output to <fname> rather than stdout\n" if $expert
   $stderr << " -B <stem>        output name stem for rejected molecules\n" if $expert
@@ -45,7 +46,7 @@ def usage (rc)
   exit(rc)
 end
 
-cl = IWCmdline.new("-v-noapdm-i=s-expert-b=fraction-B=s-q=dir-log=s-tp=close-iwd=close-bindir=dir-smarts=s-rej=s-c=ipos-Cs=ipos-Ch=ipos-C=ipos-okiso-odm=s-edm=sfile-relaxed-nodemerit-S=s-dcf=sfile-nobadfiles-symm=ipos-nophosphorus-label")
+cl = IWCmdline.new("-v-noapdm-i=s-expert-b=fraction-B=s-q=dir-log=s-tp=close-iwd=close-bindir=dir-smarts=s-rej=s-c=ipos-Cs=ipos-Ch=ipos-C=ipos-okiso-odm=s-edm=sfile-relaxed-nolimit-nodemerit-S=s-dcf=sfile-nobadfiles-symm=ipos-nophosphorus-label")
 
 if cl.unrecognised_options_encountered()
   $stderr << "Unrecognised options encountered\n"
@@ -154,6 +155,10 @@ if cl.option_present('relaxed')
   $default_soft_upper_atom_count_cutoff = 26
   $default_hard_upper_atom_count_cutoff = 50
   extra_iwdemerit_options << " -f 160"
+end
+
+if cl.option_present('nolimit')
+  extra_iwdemerit_options << " -f 100000"
 end
 
 if cl.option_present('nodemerit')
